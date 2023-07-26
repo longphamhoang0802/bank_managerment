@@ -2,6 +2,8 @@ package bank.management.system;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.EventListener;
 
 public class Login extends JFrame implements EventListener {
@@ -80,12 +82,21 @@ public class Login extends JFrame implements EventListener {
         try{
             String username = textField2.getText();
             String password = textField3.getText();
+            Connect connect = new Connect();
+
+            String q = "SELECT * FROM signup";
+            PreparedStatement preparedStatement = connect.connection.prepareStatement(q);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
             System.out.println("username: " + username);
             System.out.println("password: " + password);
-            if(username.equals("phamlong") && password.equals("123")){
-                System.out.println("======> đã đăng nhập");
-                // xử lí check trong DB
-            }else{
+            if(resultSet.next()) {
+                if (username.equals(resultSet.getString("username")) && password.equals(resultSet.getString("password"))) {
+                    System.out.println("======> đã đăng nhập");
+                } else {
+                    System.out.println("======> không tô tại tài khoản này");
+                }
+            }else {
                 System.out.println("======> chưa có tài khoản");
             }
         }catch (Exception E){
